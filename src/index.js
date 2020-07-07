@@ -50,7 +50,7 @@ app.post('/api/comments', (req, res) => {
           executionTime: timerEnd,
           avgExecTime: appCache.get('executionTimers').reduce((acc, cur) => acc + cur) / (appCache.get('executionTimers')).length,
         });
-      });
+      }).catch((e) => res.send(e));
     } else {
       res.send('You have made too many requests, please try again later');
       setTimeout(() => appCache.set('executions', 0), 10000);
