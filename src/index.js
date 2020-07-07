@@ -8,7 +8,7 @@ import topWords from './topWords.js';
 const app = express();
 const appCache = new NodeCache();
 
-app.listen(process.env.PORT || 3000, () => console.log('Server working at port:', process.env.PORT || 3000));
+app.listen(process.env.PORT || 3000);
 
 appCache.mset([
   { key: 'executions', val: 0 },
