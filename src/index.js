@@ -30,7 +30,7 @@ app.post('/api/comments', (req, res) => {
 
       getComments().then((data) => {
         const user = topUser(data);
-        const words = Object.fromEntries(topWords(data));
+        const words = topWords(data);
 
         const timerEnd = new Date().getTime() - timerStart;
         const timerArr = appCache.get('executionTimers');

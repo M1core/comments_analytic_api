@@ -1,5 +1,5 @@
 const topUser = (data) => {
-  const userCount = data.map((el) => `${el.email} `)
+  const userCount = data.map((el) => el.email)
     .reduce((acc, el) => {
       acc[el] = (acc[el] || 0) + 1;
       return acc;
