@@ -18,11 +18,18 @@ appCache.mset([
 app.post('/api/comments', (req, res) => {
   if (appCache.get('executions') < 5) {
     appCache.set('executions', appCache.get('executions') + 1);
+
     const timerStart = new Date().getTime();
-    getComments().then((d) => {
-      const user = topUser(d);
-      const words = Object.fromEntries(topWords(d));
-      const timerEnd = new Date().getTime();
+
+    getComments().then((data) => {
+      const user = topUser(data);
+      const words = Object.fromEntries(topWords(data));
+
+      const timerEnd = new Date().getTime() - timerStart;
+      const timerArr = appCache.get('executionTimers');
+      timerArr.length > 3 ? () => { timerArr.unshift(); timerArr.push(timerEnd); }
+        : timerArr.push(timerEnd);
+      appCache.set('executionTimers', timerArr);
 
       res.send({
         popularAuthor: {
@@ -30,7 +37,8 @@ app.post('/api/comments', (req, res) => {
           comments: user[1],
         },
         popularWords: words,
-        executionTime: timerEnd - timerStart,
+        executionTime: timerEnd,
+        avgExecTime: appCache.get('executionTimers').reduce((acc, cur) => acc + cur) / (appCache.get('executionTimers')).length,
       });
     });
   } else {
