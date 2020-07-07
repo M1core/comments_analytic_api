@@ -17,11 +17,11 @@ appCache.mset([
 ]);
 
 app.post('/api/auth', (req, res) => {
-  appCache.get('isAuth') ? res.send('You are already authorized')
-    : () => {
-      appCache.set('isAuth', true);
-      res.send('Succesfully authorized');
-    };
+  if (appCache.get('isAuth')) res.send('You are already authorized');
+  else {
+    appCache.set('isAuth', true);
+    res.send('Succesfully authorized');
+  }
 });
 
 app.post('/api/comments', (req, res) => {
