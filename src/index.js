@@ -1,6 +1,6 @@
 import express from 'express';
 import NodeCache from 'node-cache';
-import rateLimit from 'express-rate-limit';
+import throttle from 'express-throttle';
 
 import getComments from './getComments.js';
 import popularAuthor from './popularAuthor.js';
@@ -8,13 +8,12 @@ import popularWords from './popularWords.js';
 
 const app = express();
 const appCache = new NodeCache();
+const options = {
+  burst: 5,
+  period: '60s',
+  on_throttled: (req, res) => res.send('You made too many request, try again later'),
+};
 
-const limiter = rateLimit({
-  windowMs: 60 * 1000,
-  max: 5,
-});
-
-app.use('/api/', limiter);
 app.listen(process.env.PORT || 3000);
 
 appCache.mset([
@@ -22,7 +21,7 @@ appCache.mset([
   { key: 'isAuth', val: false },
 ]);
 
-app.post('/api/auth', (req, res) => {
+app.post('/api/auth', throttle(options), (req, res) => {
   if (appCache.get('isAuth')) res.send({ message: 'You are already authorized' });
   else {
     appCache.set('isAuth', true);
@@ -30,7 +29,7 @@ app.post('/api/auth', (req, res) => {
   }
 });
 
-app.post('/api/comments', async (req, res) => {
+app.post('/api/comments', throttle(options), async (req, res) => {
   if (appCache.get('isAuth')) {
     appCache.set('executions', appCache.get('executions') + 1);
 
