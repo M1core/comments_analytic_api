@@ -46,12 +46,11 @@ app.post('/api/comments', async (req, res) => {
     const timerArr = appCache.get('executionTimers');
     // т.к. расчёт среднего времени ведётся с ограниченным числом записей,
     // то массив надо ограничить
-    if (timerArr.length > 10) {
-      // если записей больше чем задано условием, то из начала массива
-      // убираем запись и добавляем новую в конец
-      timerArr.unshift(); timerArr.push(timerEnd);
-      // иначе добавляем запись в конец массива
-    } else timerArr.push(timerEnd);
+    if (timerArr.length > 10) timerArr.unshift();
+    // если записей больше чем задано условием, то из начала массива
+    // убираем запись и добавляем новую в конец
+
+    timerArr.push(timerEnd);
     appCache.set('executionTimers', timerArr); // сохраняем массив в кеш
 
     res.send({
