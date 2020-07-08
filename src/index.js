@@ -11,7 +11,7 @@ const appCache = new NodeCache();
 const options = {
   burst: 5,
   period: '60s',
-  on_throttled: (req, res) => res.send('You made too many request, try again later'),
+  on_throttled: (req, res) => res.send({ message: 'You made too many request, try again later' }),
 };
 
 app.listen(process.env.PORT || 3000);
