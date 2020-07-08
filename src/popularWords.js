@@ -1,4 +1,4 @@
-const topWords = (data) => {
+const popularWords = (data) => {
   const comments = data.map((el) => `${el.body} `).toString().toLowerCase().replace(/.,/g, '')
     .split(/[\s\n]/)
     .reduce((acc, el) => {
@@ -9,4 +9,4 @@ const topWords = (data) => {
   return Object.fromEntries(Object.entries(comments).sort((a, b) => b[1] - a[1]).slice(0, 5));
 };
 
-export default topWords;
+export default popularWords;
